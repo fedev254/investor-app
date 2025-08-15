@@ -1,0 +1,10 @@
+# d/investor-app/Infinity_FinTech_Backend/.env
+
+SECRET_KEY=your-actual-django-secret-key-goes-here
+DEBUG=True
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=investor_db
+DB_USER=investor_user
+DB_PASSWORD='6d5JQgt33.'
+DB_HOST='127.0.0.1'
+DB_PORT=5432

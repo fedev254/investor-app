@@ -1,0 +1,102 @@
+/* src/components/Sidebar.module.css */
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    padding: 1.5rem;
+    font-size: 1.7rem;
+    font-weight: 800;
+    text-align: center;
+    color: #1a253c;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.nav {
+    padding: 1rem 0;
+    flex-grow: 1;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0.9rem 1.5rem;
+    margin: 0.25rem 1rem;
+    color: #5a6a85;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.navLink:hover {
+    background-color: #f8f9fa;
+    color: #0056b3;
+}
+
+.navLink.active {
+    background-color: #0056b3;
+    color: #ffffff;
+}
+
+.footer {
+    padding: 1rem;
+    border-top: 1px solid #f0f2f5;
+}
+
+.logoutButton {
+    composes: navLink;
+    width: 100%;
+    margin: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+/* Add these new rules to your Sidebar.module.css */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1.5rem;
+    font-size: 1.5rem; /* Slightly smaller to accommodate logo */
+    font-weight: 700;
+    color: #1a253c;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.brand img {
+    height: 40px; /* Control the logo size */
+    width: auto;
+}
+
+.userProfile { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding: 0 1rem; }
+.avatar { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+.userInfo { display: flex; flex-direction: column; }
+.userName { font-weight: 600; color: #1a253c; }
+.userRole { font-size: 0.8rem; color: #5a6a85; text-transform: capitalize; }
+
+/* Add this to the bottom of Sidebar.module.css */
+
+/* --- MEDIA QUERY FOR MOBILE --- */
+@media (max-width: 768px) {
+  .sidebar {
+    /* Hides the sidebar off-screen to the left by default */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out; /* Smooth slide animation */
+  }
+
+  /* When the 'open' class is added, the sidebar slides into view */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}

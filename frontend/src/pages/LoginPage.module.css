@@ -1,0 +1,88 @@
+/* src/pages/LoginPage.module.css - A complete professional redesign */
+
+.loginPageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  padding: 1rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px; /* Optimal width for a login form */
+  background-color: white;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Softer, more modern shadow */
+  padding: 2.5rem;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a253c;
+  margin-bottom: 2.5rem; /* More space after the title */
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
+/* --- THIS IS THE FIX FOR THE BUTTON SPACING --- */
+.buttonWrapper {
+  /* This creates a significant gap between the password field and the button */
+  margin-top: 2.5rem;
+}
+
+.button {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #0056b3;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 15px rgba(0, 86, 179, 0.2);
+}
+
+.button:hover {
+  background-color: #004494;
+  transform: translateY(-2px);
+}
+
+.error {
+  text-align: center;
+  color: #d93025;
+  margin-bottom: 1.5rem; /* Give error message some space */
+  font-weight: 500;
+}
