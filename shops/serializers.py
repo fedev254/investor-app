@@ -41,12 +41,27 @@ class CashierSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'shop', 'avatar']
 
 
+# THIS IS THE FINAL, CORRECTED ShopSerializer
+
 class ShopSerializer(serializers.ModelSerializer):
-    cashier = serializers.StringRelatedField(read_only=True)
+    # This field correctly finds the related investor and displays their name.
+    investor = serializers.StringRelatedField(read_only=True)
+    
+    # This custom field correctly finds the related cashier.
+    cashier = serializers.SerializerMethodField()
 
     class Meta:
         model = Shop
-        fields = ['id', 'name', 'location', 'profit_margin', 'investor', 'cashier']
+        # All fields are now correctly defined above or are direct fields on the model.
+        fields = ['id', 'name', 'location', 'investor', 'cashier']
+
+    # This method correctly finds the cashier for the SerializerMethodField.
+    def get_cashier(self, obj):
+        try:
+            cashier_instance = Cashier.objects.get(shop=obj)
+            return CashierSerializer(cashier_instance).data
+        except Cashier.DoesNotExist:
+            return None
 
 
 class DailySaleSerializer(serializers.ModelSerializer):
