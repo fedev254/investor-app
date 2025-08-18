@@ -65,21 +65,7 @@ class DailySaleCreateView(generics.CreateAPIView):
         else:
             pass
 
-#==============================================================================
-# DASHBOARD-SPECIFIC API VIEW
-#==============================================================================
 
-# Infinity_FinTech_Backend/shops/views.py
-
-# ... (Keep all your existing imports at the top) ...
-
-
-# ... (All other classes like MyTokenObtainPairView, UserDetailView, etc., remain unchanged) ...
-
-
-#==============================================================================
-# DASHBOARD-SPECIFIC API VIEW (Final Corrected Version)
-#==============================================================================
 
 class InvestorDashboardView(APIView):
     """

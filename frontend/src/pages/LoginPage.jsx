@@ -1,37 +1,38 @@
 // src/pages/LoginPage.jsx
 
-// --- STEP 1: CONSOLIDATED IMPORTS ---
-// All imports are now cleanly organized at the top of the file.
-// We only import 'React' and its hooks ONCE.
+// --- IMPORTS ---
+// Your imports remain exactly the same.
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-// Import our custom context and styles
 import AuthContext from '../context/AuthContext';
 import styles from './LoginPage.module.css';
 
 function LoginPage() {
-    // --- STEP 2: RESTORED STATE DECLARATIONS ---
-    // These lines were missing in your provided code but are essential for the component to work.
+    // --- STATE AND CONTEXT ---
+    // Your state declarations and context usage remain exactly the same.
     const [username, setUsername]  = useState('');
     const [password, setPassword]  = useState('');
     const [error, setError]        = useState('');
-
-    // Get the login function from our global AuthContext
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // The handleLogin function remains the same, as its logic is correct.
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
         try {
-            const response = await axios.post('http://localhost:8000/api/token/', { username, password });
+            // --- THIS IS THE ONLY CHANGE ---
+            // 1. We read the VITE_API_BASE_URL from the environment.
+            //    If it's not set (like in local development), it defaults to localhost.
+            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+            // 2. We use that variable to construct the full, correct URL for the API call.
+            const response = await axios.post(`${apiUrl}/api/token/`, { username, password });
+            
+            // The rest of your logic remains exactly the same.
             if (response.status === 200) {
-                // Use the login function from our context to update the global state
                 login(response.data.access, response.data.refresh);
-                navigate('/dashboard'); // Navigate to the main dashboard after successful login
+                navigate('/dashboard');
             }
         } catch (err) {
             setError('Login failed. Please check your credentials.');
@@ -39,11 +40,12 @@ function LoginPage() {
         }
     };
 
-    // The JSX (the visual part) is correct and does not need changes.
+    // --- JSX (VISUALS) ---
+    // Your visual structure remains exactly the same.
     return (
         <div className={styles.loginPageContainer}>
             <div className={styles.card}>
-                <h3 className={styles.title}>Account Login</h3>
+                <h3 className={styles.title}>Login</h3>
                 <form onSubmit={handleLogin}>
                     <div className={styles.formGroup}>
                         <label htmlFor="username" className={styles.label}>Username</label>
