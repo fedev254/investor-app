@@ -1,0 +1,19 @@
+/* src/App.module.css */
+
+/* This is the main container for the ENTIRE application */
+.appContainer {
+  display: flex;
+  flex-direction: column; /* Stacks the Navbar on top of the main content */
+  min-height: 100vh; /* Ensures the app takes at least the full screen height */
+  background-color: #f8f9fa; /* A clean, light-gray background */
+}
+
+/* This is the container for the page content, below the navbar */
+.mainContent {
+  flex-grow: 1; /* This is key: it makes the content area expand to fill all available space */
+  width: 100%;
+  padding: 2rem; /* Adds comfortable spacing on all sides */
+  max-width: 1400px; /* On very large screens, the content won't stretch out too far */
+  margin: 0 auto; /* This centers the content container on large screens */
+  box-sizing: border-box; /* Ensures padding is included in the width calculation */
+}
