@@ -67,20 +67,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-<<<<<<< HEAD:Infinity_FinTech_Backend/core/settings.py
-# --- DATABASE (CONFIGURED FOR RENDER AND LOCAL) ---
-# This setup uses the DATABASE_URL from Render's environment, but falls back
-# to your local db.sqlite3 if it's not found (perfect for development).
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
-# Password validation
-=======
 
 # --- THIS IS THE CORRECTED DATABASE CONFIGURATION ---
 # This block replaces your old DATABASES setting to avoid local errors.
@@ -110,7 +96,6 @@ else:
 
 
 # --- PASSWORD VALIDATION ---
->>>>>>> 0779f46 (fix: Finalize production configuration and fixes):core/settings.py
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
