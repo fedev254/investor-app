@@ -1,34 +1,55 @@
-/* src/components/Layout.module.css */
-.layout {
-    display: flex;
-    background-color: #f8f9fa;
-}
-/* This new 'main' container will hold the mobile header and the content */
-.main {
-    flex-grow: 1;
-    width: 100%;
-}
-.content {
-    padding-left: 260px; /* The default spacing for desktop */
-    transition: padding-left 0.3s ease-in-out;
+/* in frontend/src/components/Layout.module.css */
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
 }
 
-/* --- MEDIA QUERY FOR MOBILE --- */
-@media (max-width: 768px) {
-    .content {
-        padding-left: 0; /* Content takes full width */
-    }
+.layoutContainer {
+  display: flex;
 }
-/* Add this new style to frontend/src/components/Layout.module.css */
+
+.sidebarWrapper {
+  width: 250px; /* Sidebar width on desktop */
+  height: calc(100vh - 60px); /* Adjust 60px to your Header's height */
+  position: sticky;
+  top: 60px; /* Stick below the header */
+  background-color: #f8f9fa;
+  transition: transform 0.3s ease-in-out;
+}
 
 .contentAndFooterWrapper {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 60px); /* Adjust 60px to your Header's height */
-  width: 100%; /* Ensure it takes up the full width of its container */
+  width: 100%;
 }
 
-/* This makes sure your main content area expands and pushes the footer down */
 .mainContent {
   flex: 1;
+  padding: 2rem;
+  background-color: #ffffff;
+}
+
+/* --- THIS IS THE RESPONSIVE MAGIC --- */
+@media (max-width: 992px) { /* On tablets and mobile phones */
+  .sidebarWrapper {
+    position: fixed; /* Take it out of the normal flow */
+    left: 0;
+    top: 60px;
+    height: 100%;
+    z-index: 1000;
+    background-color: white;
+    border-right: 1px solid #dee2e6;
+    /* Hide it off-screen by default */
+    transform: translateX(-100%); 
+  }
+
+  .sidebarOpen {
+    /* Bring it on-screen when the state is open */
+    transform: translateX(0);
+  }
+
+  .mainContent {
+    padding: 1rem; /* Reduce padding on smaller screens */
+  }
 }

@@ -1,45 +1,44 @@
-// src/components/Layout.jsx -- CORRECTED VERSION
+// in frontend/src/components/Layout.jsx
 
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import AuthContext from '../context/AuthContext';
-import { Navigate, Outlet } from 'react-router-dom';
-import styles from './Layout.module.css';
-
-// We still import the footer.
 import Footer from './Footer';
+import AuthContext from '../context/AuthContext';
+import styles from './Layout.module.css';
 
 const Layout = () => {
     const { user } = useContext(AuthContext);
+    const [isSidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
 
-    // This user check is correct.
     if (!user) {
         return <Navigate to="/login" />;
     }
 
-    // --- THIS IS THE CORRECTED JSX STRUCTURE ---
-    // We go back to your original structure and simply add the Footer at the end.
-    return (
-        <> {/* A React Fragment is used to group elements without adding an extra div */}
-            <Header />
+    const toggleSidebar = () => {
+        setSidebarOpen(!isSidebarOpen);
+    };
 
+    return (
+        <div className={styles.appContainer}>
+            {/* Pass the toggle function and state to the Header */}
+            <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            
             <div className={styles.layoutContainer}>
-                <Sidebar />
+                {/* Add a class to the sidebar based on its state */}
+                <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+                    <Sidebar />
+                </div>
                 
-                {/* We create a new inner wrapper here for the main content and footer */}
                 <div className={styles.contentAndFooterWrapper}>
-                    {/* Your main content area where pages will render */}
                     <main className={styles.mainContent}>
                         <Outlet />
                     </main>
-
-                    {/* The footer is placed here, so it is part of the right-hand
-                        column but appears after the main content */}
                     <Footer />
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

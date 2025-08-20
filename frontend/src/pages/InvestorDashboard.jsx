@@ -1,11 +1,11 @@
-// src/pages/InvestorDashboard.jsx
+// src/pages/InvestorDashboard.jsx - FINAL, COMPLETE, AND RESPONSIVE
 
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 import AuthContext from '../context/AuthContext';
 import styles from './InvestorDashboard.module.css';
 
-// Reusable KPI Card component (Your code - unchanged and correct)
+// Reusable KPI Card component (Your code - unchanged)
 const KpiCard = ({ title, value, color }) => (
     <div className={`${styles.kpiCard} ${styles[color]}`}>
         <div className={styles.kpiTitle}>{title}</div>
@@ -13,13 +13,13 @@ const KpiCard = ({ title, value, color }) => (
     </div>
 );
 
-// Helper function for formatting currency (Your code - unchanged and correct)
+// Helper function for formatting currency (Your code - unchanged)
 const formatCurrency = (amount) => {
     const numericAmount = Number(amount) || 0;
     return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(numericAmount);
 };
 
-// Helper function for formatting dates (Your code - unchanged and correct)
+// Helper function for formatting dates (Your code - unchanged)
 const formatDate = (dateString) => {
     if (!dateString) return 'No sales yet';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -28,7 +28,7 @@ const formatDate = (dateString) => {
 
 
 function InvestorDashboard() {
-    // Your state management logic is perfect.
+    // Your state management and data fetching logic remain unchanged.
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -37,8 +37,6 @@ function InvestorDashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // --- FIX #1: CORRECTED THE API ENDPOINT URL ---
-                // The URL must match our versioned API structure.
                 const response = await api.get('/investor/dashboard/');
                 setDashboardData(response.data);
             } catch (err) {
@@ -66,7 +64,8 @@ function InvestorDashboard() {
             <div className={styles.tableCard}>
                 <h2 className={styles.tableTitle}>Shop Performance Overview</h2>
                 <div className="table-responsive">
-                    <table className={`table ${styles.table}`}>
+                    {/* EDIT #1: Added the responsiveTable class */}
+                    <table className={`table ${styles.table} ${styles.responsiveTable}`}>
                         <thead>
                             <tr>
                                 <th>Shop Name</th>
@@ -74,24 +73,21 @@ function InvestorDashboard() {
                                 <th>Assigned Cashier</th>
                                 <th>Latest Sale Date</th>
                                 <th className="text-end">Today's Profit</th>
-                                {/* --- FIX #2: ADDED THE "RECEIPT" TABLE HEADER --- */}
                                 <th className="text-center">Receipt</th>
                             </tr>
                         </thead>
                         <tbody>
                             {dashboardData.shops_performance.map(shop => (
                                 <tr key={shop.id}>
-                                    <td>{shop.name}</td>
-                                    <td>{shop.location}</td>
-                                    <td>{shop.cashier_name}</td>
-                                    <td>{formatDate(shop.latest_sale_date)}</td>
-                                    <td className={`text-end ${parseFloat(shop.todays_profit) >= 0 ? styles.profit : styles.loss}`}>
+                                    {/* EDIT #2: Added the "data-label" attributes */}
+                                    <td data-label="Shop Name">{shop.name}</td>
+                                    <td data-label="Location">{shop.location}</td>
+                                    <td data-label="Assigned Cashier">{shop.cashier_name}</td>
+                                    <td data-label="Latest Sale">{formatDate(shop.latest_sale_date)}</td>
+                                    <td data-label="Today's Profit" className={`text-end ${parseFloat(shop.todays_profit) >= 0 ? styles.profit : styles.loss}`}>
                                         {formatCurrency(shop.todays_profit)}
                                     </td>
-                                    
-                                    {/* --- FIX #2: ADDED THE "RECEIPT" TABLE DATA CELL --- */}
-                                    <td className="text-center">
-                                        {/* This will only show a button if a receipt URL exists for today's sale */}
+                                    <td data-label="Receipt" className="text-center">
                                         {shop.todays_receipt_url ? (
                                             <a 
                                                 href={shop.todays_receipt_url} 
