@@ -1,6 +1,5 @@
-// src/components/Layout.jsx
+// src/components/Layout.jsx -- CORRECTED VERSION
 
-// Your existing imports.
 import React, { useContext } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -8,39 +7,39 @@ import AuthContext from '../context/AuthContext';
 import { Navigate, Outlet } from 'react-router-dom';
 import styles from './Layout.module.css';
 
-// We just need to import the Footer.
+// We still import the footer.
 import Footer from './Footer';
 
 const Layout = () => {
     const { user } = useContext(AuthContext);
 
-    // Your existing user check for authentication. This is perfect.
+    // This user check is correct.
     if (!user) {
         return <Navigate to="/login" />;
     }
 
-    // Your existing JSX structure is great. We will just wrap it to manage the footer position.
+    // --- THIS IS THE CORRECTED JSX STRUCTURE ---
+    // We go back to your original structure and simply add the Footer at the end.
     return (
-        // --- EDIT START ---
-        // This outer div now uses flexbox to position the footer correctly.
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            
-            <Header /> {/* Your existing header */}
+        <> {/* A React Fragment is used to group elements without adding an extra div */}
+            <Header />
 
-            {/* 'flex: 1' makes this middle area grow to push the footer down */}
-            <div className={styles.layoutContainer} style={{ flex: '1' }}>
-                <Sidebar /> {/* Your existing sidebar */}
+            <div className={styles.layoutContainer}>
+                <Sidebar />
                 
-                {/* Your main content area where pages are rendered */}
-                <main className={styles.mainContent}>
-                    <Outlet /> 
-                </main>
-            </div>
-            
-            <Footer /> {/* The Footer component is added here at the end. */}
+                {/* We create a new inner wrapper here for the main content and footer */}
+                <div className={styles.contentAndFooterWrapper}>
+                    {/* Your main content area where pages will render */}
+                    <main className={styles.mainContent}>
+                        <Outlet />
+                    </main>
 
-        </div>
-        // --- EDIT END ---
+                    {/* The footer is placed here, so it is part of the right-hand
+                        column but appears after the main content */}
+                    <Footer />
+                </div>
+            </div>
+        </>
     );
 };
 

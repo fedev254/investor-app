@@ -19,3 +19,16 @@
         padding-left: 0; /* Content takes full width */
     }
 }
+/* Add this new style to frontend/src/components/Layout.module.css */
+
+.contentAndFooterWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px); /* Adjust 60px to your Header's height */
+  width: 100%; /* Ensure it takes up the full width of its container */
+}
+
+/* This makes sure your main content area expands and pushes the footer down */
+.mainContent {
+  flex: 1;
+}
