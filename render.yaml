@@ -1,9 +1,25 @@
+# In D:/investor-app/render.yaml
+
+# This 'previews' key enables Pull Request Previews, a nice feature
+previews: true
+
+# This 'databases' key defines your PostgreSQL instance
+databases:
+  - name: investor-db
+    plan: free # Explicitly use the free plan for the database
+    # postgresqlMajorVersion: 15 # Optional: specify a version
+
+# This 'services' key defines your applications
 services:
+  #--------------------
+  # 1. The Backend Web Service
+  #--------------------
   - type: web
     name: investor-app-backend
     env: python
     rootDir: backend
-    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+    plan: free # Explicitly use the free plan for the web service
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
     startCommand: "gunicorn core.wsgi"
     envVars:
       - key: DATABASE_URL
@@ -14,14 +30,26 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: PYTHON_VERSION
-        value: "3.11.3"
+        value: "3.11.9"
+      # Link to the frontend URL for CORS. Render fills this in.
+      - key: RENDER_FRONTEND_URL
+        fromService:
+          type: static_site
+          name: investor-app-frontend
+          property: url
+      # Link to your Cloudinary secrets. This is the correct way.
       - fromEnvGroup: infinity-fintech-secrets
 
-  - type: staticSite
+  #--------------------
+  # 2. The Frontend Static Site
+  #--------------------
+  - type: static_site # This was the source of the error in the screenshot
     name: investor-app-frontend
     rootDir: frontend
+    plan: free # Explicitly use the free plan for the static site
     buildCommand: "npm install && npm run build"
-    publishDir: "dist"
+    # For a static site, there is no startCommand. Instead, we specify the directory to publish.
+    # publishPath: "dist" # The 'publishDir' key seems to have been deprecated for `static_site`
     routes:
       - type: rewrite
         source: "/*"
@@ -33,5 +61,7 @@ services:
           name: investor-app-backend
           property: url
 
-databases:
-  - name: investor-db
+# This 'envVarGroups' key references the secrets group you created.
+envVarGroups:
+  - name: infinity-fintech-secrets
+    # envVars are defined on your Render dashboard, not here
