@@ -20,7 +20,7 @@ services:
     envVars:
       - key: DATABASE_URL
         fromService:
-          type: psql
+          type: database
           name: investor-db
           property: connectionString
       - key: SECRET_KEY
@@ -31,8 +31,7 @@ services:
         fromService:
           type: web
           name: investor-app-frontend
-          property: url
-      - fromEnvGroup: infinity-fintech-secrets
+          property: host
 
   # --------------------
   # 2. Frontend Static Site (React / Vite / Next.js static build)
@@ -53,7 +52,7 @@ services:
         fromService:
           type: web
           name: investor-app-backend
-          property: url
+          property: host
 
 # Secrets group reference
 envVarGroups:
