@@ -6,26 +6,23 @@ services:
   #--------------------
   - type: web
     name: investor-app-backend
-    # Use 'python' for the environment
     env: python
-    # Ensure Render is looking in the correct sub-folder
     rootDir: backend
-    # Explicitly set the python version
-    pythonVersion: "3.11.3" # Or your exact python version
-    # The build command with dependency installation FIRST
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
-    # The start command
     startCommand: "gunicorn core.wsgi"
-    # This section syncs your environment variables from the dashboard
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: investor-db # <-- Ensure this matches the name of your Render DB
           property: internalConnectionString
+      # Environment variables for your secrets
+      # To set these, go to your Account Settings > Blueprints
+      # and create an "Environment Group" with these secret keys.
+      # Then add 'envGroup: your-group-name' here.
       - key: SECRET_KEY
-        sync: false # Keep this secret on the dashboard, don't show it here
+        generateValue: true # Or pull from an env group
       - key: RENDER_FRONTEND_URL
-        sync: false # Keep this on the dashboard
+        value: "https://investor-app-frontend.onrender.com" # Default frontend name
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY
@@ -33,22 +30,25 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: PYTHON_VERSION
-        sync: false
+        value: "3.11.9" # Set your Python version here
 
   #--------------------
-  # 2. The Frontend Static Site
+  # 2. The Frontend Static Site (Corrected Type)
   #--------------------
-  - type: web
+  - type: static_site # Use 'static_site' for React/Vite
     name: investor-app-frontend
-    # Use 'node' for the environment
-    env: node
-    # Ensure Render is looking in the correct sub-folder
     rootDir: frontend
-    # Build and start commands for a React/Vite app
     buildCommand: "npm install && npm run build"
-    startCommand: "serve -s dist" # Vite's production server recommendation
-    # We will need to add the serve package. See below.
+    publishDir: "dist" # The output folder for Vite's build
+    # Rewrite rule for single-page applications
+    routes:
+      - type: rewrite
+        source: "/*"
+        destination: "/index.html"
     # Environment variable for the frontend to find the backend
     envVars:
       - key: VITE_API_BASE_URL
-        value: "https://investor-app-backend-qdnh.onrender.com" # Your actual backend URL
+        fromService:
+          type: web
+          name: investor-app-backend
+          property: url
