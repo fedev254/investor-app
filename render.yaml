@@ -1,9 +1,11 @@
 # In D:/investor-app/render.yaml
 
+# This section defines your database. It's separate from services.
 databases:
   - name: investor-db
     plan: free
 
+# This section defines your two applications.
 services:
   #--------------------
   # 1. Backend Web Service (Django)
@@ -12,40 +14,44 @@ services:
     name: investor-app-backend
     env: python
     rootDir: backend
-    plan: free # 'web' service type has a free tier
+    plan: free
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
     startCommand: "gunicorn core.wsgi"
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
+        fromService:
+          type: psql
           name: investor-db
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: PYTHON_VERSION
         value: "3.11.9"
-      - fromEnvGroup: infinity-fintech-secrets # For your Cloudinary keys
+      # This CORRECTLY links your Environment Group
+      - fromEnvGroup: infinity-fintech-secrets
+      - key: RENDER_FRONTEND_URL
+        fromService:
+          type: web
+          name: investor-app-frontend
+          property: host # The host is the URL
 
   #--------------------
   # 2. Frontend Web Service (React/Vite)
-  # CORRECTED: This must also be 'type: web'
   #--------------------
   - type: web
     name: investor-app-frontend
-    env: node # Use the Node.js environment
+    env: node
     rootDir: frontend
-    plan: free # 'web' service on the free tier also works for simple Node servers
+    plan: free
     buildCommand: "npm install && npm run build"
-    # The start command installs 'serve' and runs the built 'dist' folder.
-    # The '-s' flag handles the SPA rewrite rule automatically.
-    startCommand: "npm install -g serve && serve -s dist"
+    startCommand: "serve -s dist"
     envVars:
       - key: VITE_API_BASE_URL
         fromService:
           type: web
           name: investor-app-backend
-          property: url
+          property: host # The host is the URL
 
-# Define your secrets group
+# Define the name of your secrets group
 envVarGroups:
   - name: infinity-fintech-secrets
