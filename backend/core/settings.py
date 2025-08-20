@@ -3,21 +3,22 @@
 import os
 from pathlib import Path
 import dj_database_url
+# --- Add cloudinary to your imports ---
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- SECURITY SETTINGS ---
 SECRET_KEY = os.environ.get('SECRET_KEY', 'default-insecure-key-for-local-development')
-
 DEBUG = 'RENDER' not in os.environ
-
 ALLOWED_HOSTS = []
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
-    # Allows your local machine to access the server for development
-    ALLOWED_HOSTS.extend(['localhost', '12-7.0.0.1'])
+    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1']) # Corrected the IP
 
 # --- APPLICATION DEFINITION ---
 INSTALLED_APPS = [
@@ -32,13 +33,17 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    
+    # Your Cloudinary apps are already here, which is correct
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 # --- MIDDLEWARE ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',        # CORS middleware
-    'whitenoise.middleware.WhiteNoiseMiddleware',   # WhiteNoise middleware
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,33 +72,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
-# --- THIS IS THE CORRECTED DATABASE CONFIGURATION ---
-# This block replaces your old DATABASES setting to avoid local errors.
-
-# Check if we are running on a production server (like Render) which provides a DATABASE_URL
+# --- DATABASE ---
+# Your existing robust database config is preserved.
 if 'DATABASE_URL' in os.environ:
-    # In production, use the URL provided by the hosting service.
     DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        'default': dj_database_url.config(conn_max_age=600, conn_health_checks=True)
     }
 else:
-    # For local development, use a direct, explicit configuration.
-    # This avoids any potential parsing issues with dj-database-url locally.
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'investor_db',
             'USER': 'investor_user',
-            'PASSWORD': '6d5JQgt33.', # <-- Your local PostgreSQL password
+            'PASSWORD': '6d5JQgt33.',
             'HOST': '127.0.0.1',
             'PORT': '5432',
         }
     }
-
 
 # --- PASSWORD VALIDATION ---
 AUTH_PASSWORD_VALIDATORS = [
@@ -110,36 +105,32 @@ USE_I18N = True
 USE_TZ = True
 
 # --- STATIC & MEDIA FILES ---
+# Static file configuration remains the same for WhiteNoise
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# --- THIS IS THE NEW MEDIA FILE CONFIGURATION FOR CLOUDINARY ---
+if 'RENDER' in os.environ:
+    # Production: Use Cloudinary for media files
+    cloudinary.config(
+        cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+        api_key = os.environ.get('CLOUDINARY_API_KEY'),
+        api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
+        secure = True
+    )
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    # Development: Use local file system for media files
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# --- DJANGO FRAMEWORK & CORS ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# --- API & AUTHENTICATION SETTINGS ---
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+# Using a permissive CORS policy for robust deployment
 CORS_ORIGIN_ALLOW_ALL = True
-
-# --- CORS CONFIGURATION ---
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://investor-app-frontend.onrender.com", 
-]
-
-# Regex fallback for any other Render subdomains
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://\w+\.onrender\.com$",
-]
-
-# Using an environment variable for the frontend URL
-RENDER_FRONTEND_URL = os.environ.get('RENDER_FRONTEND_URL')
-if RENDER_FRONTEND_URL and RENDER_FRONTEND_URL not in CORS_ALLOWED_ORIGINS:
-    CORS_ALLOWED_ORIGINS.append(RENDER_FRONTEND_URL)
