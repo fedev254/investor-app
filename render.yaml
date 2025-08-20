@@ -1,21 +1,20 @@
 # In D:/investor-app/render.yaml
 
-# Define the PostgreSQL database
+# This section defines the two types of resources: databases and services
 databases:
   - name: investor-db
-    plan: free
+    plan: free # The database has a free plan
 
-# Define the backend and frontend services
 services:
-  # --------------------
-  # 1. Backend Web Service (Django)
-  # --------------------
+  #--------------------
+  # 1. The Backend Web Service (Django)
+  #--------------------
   - type: web
     name: investor-app-backend
     env: python
     rootDir: backend
-    plan: free
-    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+    plan: free # This is a 'web' service, which has a free plan.
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
     startCommand: "gunicorn core.wsgi"
     envVars:
       - key: DATABASE_URL
@@ -25,23 +24,25 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: PYTHON_VERSION
-        value: "3.11.9"
+        value: "3.11.9" # Updated to your version
       - key: RENDER_FRONTEND_URL
         fromService:
-          type: web
+          type: static_site # This refers to the service type below
           name: investor-app-frontend
-          property: host
+          property: url
+      - fromEnvGroup: infinity-fintech-secrets # This is for your Cloudinary keys
 
-  # --------------------
-  # 2. Frontend Static Site (React / Vite / Next.js static build)
-  # --------------------
-  - type: web
+  #--------------------
+  # 2. The Frontend Static Site (React)
+  #--------------------
+  - type: static_site # Using the correct 'static_site' type
     name: investor-app-frontend
-    env: static
     rootDir: frontend
-    plan: free
+    plan: free # 'static_site' type has a free plan.
     buildCommand: "npm install && npm run build"
-    staticPublishPath: dist   # or "build" depending on framework
+    # The 'publishDir' is the key that static_site uses.
+    publishDir: ./dist
+    # The rewrite rule for SPAs
     routes:
       - type: rewrite
         source: "/*"
@@ -51,8 +52,8 @@ services:
         fromService:
           type: web
           name: investor-app-backend
-          property: host
+          property: url
 
-# Secrets group reference
+# Ensure the Environment Group is defined if used
 envVarGroups:
   - name: infinity-fintech-secrets
