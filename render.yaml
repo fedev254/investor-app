@@ -1,13 +1,9 @@
 # In D:/investor-app/render.yaml
 
-# Enable PR previews
-previews: true
-
 # Define the PostgreSQL database
 databases:
   - name: investor-db
     plan: free
-    postgresqlMajorVersion: 15 # Optional but recommended
 
 # Define the backend and frontend services
 services:
@@ -31,13 +27,11 @@ services:
         generateValue: true
       - key: PYTHON_VERSION
         value: "3.11.9"
-      # Link to the frontend URL for CORS
       - key: RENDER_FRONTEND_URL
         fromService:
           type: web
           name: investor-app-frontend
           property: url
-      # Link to secrets group
       - fromEnvGroup: infinity-fintech-secrets
 
   # --------------------
@@ -49,7 +43,7 @@ services:
     rootDir: frontend
     plan: free
     buildCommand: "npm install && npm run build"
-    staticPublishPath: dist  # or "build" depending on framework
+    staticPublishPath: dist   # or "build" depending on framework
     routes:
       - type: rewrite
         source: "/*"
