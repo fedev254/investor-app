@@ -48,7 +48,22 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
-TEMPLATES = [ #... keep this section as is ... 
+# in backend/core/settings.py
+
+# --- THIS IS THE CORRECT, FULL TEMPLATES CONFIGURATION ---
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # APP_DIRS must be True so Django can find the admin's built-in templates.
+        'APP_DIRS': True, 
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
 ]
 WSGI_APPLICATION = 'core.wsgi.application'
 
