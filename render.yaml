@@ -19,8 +19,7 @@ services:
     startCommand: "gunicorn core.wsgi"
     envVars:
       - key: DATABASE_URL
-        fromService:
-          type: database
+        fromDatabase:
           name: investor-db
           property: connectionString
       - key: SECRET_KEY
