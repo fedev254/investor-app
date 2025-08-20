@@ -1,15 +1,32 @@
 /* in frontend/src/components/Footer.module.css */
 
-.footerContainer {
-  /* You can add any container-specific styles here if needed */
+/* General text styling for the footer for a consistent, readable look */
+.footerText {
+  font-size: 0.9rem;      /* Slightly smaller than main body text */
+  color: #adb5bd;        /* A softer white/grey for less emphasis */
+  margin-bottom: 0.5rem;  /* Consistent spacing */
 }
 
+/* Styling for clickable links in the "Links" section */
+.footerLink {
+  transition: color 0.2s ease-in-out;
+}
+
+.footerLink:hover {
+  color: #ffc107 !important; /* The same warning/gold color as the titles on hover */
+  text-decoration: underline !important;
+}
+
+/* Styling for the social media icons */
 .socialIcon i {
-  font-size: 1.2rem;
-  transition: transform 0.2s ease-in-out;
+  font-size: 1.3rem;
+  color: #ffffff; /* Start as white */
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .socialIcon:hover i {
-  transform: scale(1.2);
-  color: #ffc107; /* Or your preferred brand color */
+  transform: scale(1.2);    /* Make the icon slightly larger on hover */
+  color: #ffc107;         /* Change color to match the theme's highlight color */
 }
+
+/* No other styles are needed as Bootstrap handles the main layout and responsiveness */

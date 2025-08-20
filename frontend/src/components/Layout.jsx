@@ -1,33 +1,47 @@
 // src/components/Layout.jsx
-import React, { useState } from 'react';
+
+// Your existing imports.
+import React, { useContext } from 'react';
+import Header from './Header';
 import Sidebar from './Sidebar';
-import Header from './Header'; // Import the new mobile header
+import AuthContext from '../context/AuthContext';
+import { Navigate, Outlet } from 'react-router-dom';
 import styles from './Layout.module.css';
 
-function Layout({ children }) {
-    // --- NEW: State to control sidebar visibility ---
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+// We just need to import the Footer.
+import Footer from './Footer';
 
-    // This function will be passed to the Header component
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
+const Layout = () => {
+    const { user } = useContext(AuthContext);
 
+    // Your existing user check for authentication. This is perfect.
+    if (!user) {
+        return <Navigate to="/login" />;
+    }
+
+    // Your existing JSX structure is great. We will just wrap it to manage the footer position.
     return (
-        <div className={styles.layout}>
-            {/* The Sidebar will now have a prop to control its "open" state */}
-            <Sidebar isOpen={isSidebarOpen} />
+        // --- EDIT START ---
+        // This outer div now uses flexbox to position the footer correctly.
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            
+            <Header /> {/* Your existing header */}
 
-            <div className={styles.main}>
-                {/* The Header is the mobile-only top bar with the menu button */}
-                <Header onMenuClick={toggleSidebar} />
-
-                {/* The page content (Dashboard, etc.) is rendered here */}
-                <div className={styles.content}>
-                    {children}
-                </div>
+            {/* 'flex: 1' makes this middle area grow to push the footer down */}
+            <div className={styles.layoutContainer} style={{ flex: '1' }}>
+                <Sidebar /> {/* Your existing sidebar */}
+                
+                {/* Your main content area where pages are rendered */}
+                <main className={styles.mainContent}>
+                    <Outlet /> 
+                </main>
             </div>
+            
+            <Footer /> {/* The Footer component is added here at the end. */}
+
         </div>
+        // --- EDIT END ---
     );
-}
+};
+
 export default Layout;

@@ -1,46 +1,58 @@
-// src/App.jsx - The final and correct routing architecture
+// src/App.jsx - Edited for clarity and to ensure layout consistency
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Import all your major components
-import Layout from './components/Layout';         // The layout WITH the sidebar
-import ProtectedRoute from './components/ProtectedRoute';
+// Import your components and pages
+import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
-// Assuming your other dashboards exist, let's import them
+// Your existing dashboard imports
 import CashierDashboard from './pages/CashierDashboard';
 import InvestorDashboard from './pages/InvestorDashboard';
+// Assuming your ProtectedRoute component simply checks for authentication
+import ProtectedRoute from './components/ProtectedRoute'; 
+
+// --- EDIT: For clarity, we can wrap our protected routes within the layout.
+// This new component helps structure our protected routes cleanly.
+const ProtectedRoutesWithLayout = () => (
+    <ProtectedRoute>
+        <Layout>
+            <Outlet /> {/* The nested route components will render here */}
+        </Layout>
+    </ProtectedRoute>
+);
+
+// We'll also need to import Outlet for this to work
+import { Outlet } from 'react-router-dom';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* --- ROUTE GROUP 1: Public Routes --- */}
-        {/* These routes are for anyone. They do NOT use the main app Layout. */}
+        {/* --- Public Route: Login Page --- */}
+        {/* Anyone can access this page. */}
         <Route path="/login" element={<LoginPage />} />
         
-        {/* --- ROUTE GROUP 2: Private / Protected Routes --- */}
-        {/* This is a wrapper route. Any route inside here will be protected
-            and will automatically render inside our main <Layout> component. */}
-        <Route 
-          path="/*" // Match any path that wasn't matched above
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <Routes>
-                  {/* Define all your protected pages inside this nested router */}
-                  <Route path="/dashboard" element={<MainDashboard />} />
-                  <Route path="/investor-dashboard" element={<InvestorDashboard />} />
-                  <Route path="/cashier-dashboard" element={<CashierDashboard />} />
-                  
-                  {/* The default redirect if the user is logged in but at a non-existent path */}
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
-                </Routes>
-              </Layout>
-            </ProtectedRoute>
-          } 
-        />
+        {/* --- Protected Routes --- */}
+        {/* This is a wrapper route. Any nested routes inside will be protected by
+            your ProtectedRoute component and automatically rendered within the Layout. */}
+        <Route element={<ProtectedRoutesWithLayout />}>
+            <Route path="/dashboard" element={<MainDashboard />} />
+            <Route path="/investor-dashboard" element={<InvestorDashboard />} />
+            <Route path="/cashier-dashboard" element={<CashierDashboard />} />
+
+            {/* You can add more protected routes here later */}
+            {/* e.g., <Route path="/profile" element={<ProfilePage />} /> */}
+        </Route>
+
+        {/* --- Default Route Redirect --- */}
+        {/* If someone lands on the root URL "/", it redirects to "/dashboard".
+            The dashboard route will then handle the auth check. */}
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+        
+        {/* Optional: A catch-all route for any undefined paths */}
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </BrowserRouter>
   );
