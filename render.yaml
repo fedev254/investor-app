@@ -1,19 +1,18 @@
 # In D:/investor-app/render.yaml
 
-# This section defines the two types of resources: databases and services
 databases:
   - name: investor-db
-    plan: free # The database has a free plan
+    plan: free
 
 services:
   #--------------------
-  # 1. The Backend Web Service (Django)
+  # 1. Backend Web Service (Django)
   #--------------------
   - type: web
     name: investor-app-backend
     env: python
     rootDir: backend
-    plan: free # This is a 'web' service, which has a free plan.
+    plan: free # 'web' service type has a free tier
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
     startCommand: "gunicorn core.wsgi"
     envVars:
@@ -24,29 +23,22 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: PYTHON_VERSION
-        value: "3.11.9" # Updated to your version
-      - key: RENDER_FRONTEND_URL
-        fromService:
-          type: static_site # This refers to the service type below
-          name: investor-app-frontend
-          property: url
-      - fromEnvGroup: infinity-fintech-secrets # This is for your Cloudinary keys
+        value: "3.11.9"
+      - fromEnvGroup: infinity-fintech-secrets # For your Cloudinary keys
 
   #--------------------
-  # 2. The Frontend Static Site (React)
+  # 2. Frontend Web Service (React/Vite)
+  # CORRECTED: This must also be 'type: web'
   #--------------------
-  - type: static_site # Using the correct 'static_site' type
+  - type: web
     name: investor-app-frontend
+    env: node # Use the Node.js environment
     rootDir: frontend
-    plan: free # 'static_site' type has a free plan.
+    plan: free # 'web' service on the free tier also works for simple Node servers
     buildCommand: "npm install && npm run build"
-    # The 'publishDir' is the key that static_site uses.
-    publishDir: ./dist
-    # The rewrite rule for SPAs
-    routes:
-      - type: rewrite
-        source: "/*"
-        destination: "/index.html"
+    # The start command installs 'serve' and runs the built 'dist' folder.
+    # The '-s' flag handles the SPA rewrite rule automatically.
+    startCommand: "npm install -g serve && serve -s dist"
     envVars:
       - key: VITE_API_BASE_URL
         fromService:
@@ -54,6 +46,6 @@ services:
           name: investor-app-backend
           property: url
 
-# Ensure the Environment Group is defined if used
+# Define your secrets group
 envVarGroups:
   - name: infinity-fintech-secrets
