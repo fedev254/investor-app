@@ -1,9 +1,11 @@
 # In D:/investor-app/render.yaml
 
+# This section defines all the pieces of our application.
+# Render will build them in order.
 services:
-  #--------------------
-  # 1. The Backend Web Service
-  #--------------------
+  - type: psql
+    name: investor-db
+
   - type: web
     name: investor-app-backend
     env: python
@@ -12,40 +14,32 @@ services:
     startCommand: "gunicorn core.wsgi"
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: investor-db # <-- Ensure this matches the name of your Render DB
-          property: internalConnectionString
-      # Environment variables for your secrets
-      # To set these, go to your Account Settings > Blueprints
-      # and create an "Environment Group" with these secret keys.
-      # Then add 'envGroup: your-group-name' here.
+        fromService:
+          type: psql
+          name: investor-db
+          property: connectionString
       - key: SECRET_KEY
-        generateValue: true # Or pull from an env group
-      - key: RENDER_FRONTEND_URL
-        value: "https://investor-app-frontend.onrender.com" # Default frontend name
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
+        generateValue: true # Render will generate a random secure key
       - key: PYTHON_VERSION
-        value: "3.11.9" # Set your Python version here
+        value: "3.11.9" # Or your specific version
+      - key: RENDER_FRONTEND_URL
+        fromService:
+          type: staticSite
+          name: investor-app-frontend
+          property: url
 
   #--------------------
-  # 2. The Frontend Static Site (Corrected Type)
+  # 3. The Frontend Static Site
   #--------------------
-  - type: static_site # Use 'static_site' for React/Vite
+  - type: staticSite # CORRECTED: Use camelCase 'staticSite'
     name: investor-app-frontend
     rootDir: frontend
     buildCommand: "npm install && npm run build"
-    publishDir: "dist" # The output folder for Vite's build
-    # Rewrite rule for single-page applications
+    publishDir: "dist"
     routes:
       - type: rewrite
         source: "/*"
         destination: "/index.html"
-    # Environment variable for the frontend to find the backend
     envVars:
       - key: VITE_API_BASE_URL
         fromService:
