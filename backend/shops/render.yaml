@@ -1,0 +1,54 @@
+# In D:/investor-app/render.yaml
+
+services:
+  #--------------------
+  # 1. The Backend Web Service
+  #--------------------
+  - type: web
+    name: investor-app-backend
+    # Use 'python' for the environment
+    env: python
+    # Ensure Render is looking in the correct sub-folder
+    rootDir: backend
+    # Explicitly set the python version
+    pythonVersion: "3.11.3" # Or your exact python version
+    # The build command with dependency installation FIRST
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+    # The start command
+    startCommand: "gunicorn core.wsgi"
+    # This section syncs your environment variables from the dashboard
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: investor-db # <-- Ensure this matches the name of your Render DB
+          property: internalConnectionString
+      - key: SECRET_KEY
+        sync: false # Keep this secret on the dashboard, don't show it here
+      - key: RENDER_FRONTEND_URL
+        sync: false # Keep this on the dashboard
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PYTHON_VERSION
+        sync: false
+
+  #--------------------
+  # 2. The Frontend Static Site
+  #--------------------
+  - type: web
+    name: investor-app-frontend
+    # Use 'node' for the environment
+    env: node
+    # Ensure Render is looking in the correct sub-folder
+    rootDir: frontend
+    # Build and start commands for a React/Vite app
+    buildCommand: "npm install && npm run build"
+    startCommand: "serve -s dist" # Vite's production server recommendation
+    # We will need to add the serve package. See below.
+    # Environment variable for the frontend to find the backend
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: "https://investor-app-backend-qdnh.onrender.com" # Your actual backend URL
