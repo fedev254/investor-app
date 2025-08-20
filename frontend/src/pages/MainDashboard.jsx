@@ -8,7 +8,6 @@ import CashierDashboard from './CashierDashboard';
 import InvestorDashboard from './InvestorDashboard';
 
 // Import the new Footer component.
-import Footer from '../components/Footer';
 
 // A simple component for a clean loading screen.
 const LoadingScreen = () => (
@@ -51,7 +50,7 @@ function MainDashboard() {
             </main>
             
             {/* The Footer component is added here, outside the main content area. */}
-            <Footer />
+            
         </div>
     );
 }
