@@ -1,16 +1,9 @@
-# In D:/investor-app/render.yaml
-
-# This section defines all the pieces of our application.
-# Render will build them in order.
 services:
-  - type: psql
-    name: investor-db
-
   - type: web
     name: investor-app-backend
     env: python
     rootDir: backend
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
     startCommand: "gunicorn core.wsgi"
     envVars:
       - key: DATABASE_URL
@@ -19,19 +12,12 @@ services:
           name: investor-db
           property: connectionString
       - key: SECRET_KEY
-        generateValue: true # Render will generate a random secure key
+        generateValue: true
       - key: PYTHON_VERSION
-        value: "3.11.9" # Or your specific version
-      - key: RENDER_FRONTEND_URL
-        fromService:
-          type: staticSite
-          name: investor-app-frontend
-          property: url
+        value: "3.11.3"
+      - fromEnvGroup: infinity-fintech-secrets
 
-  #--------------------
-  # 3. The Frontend Static Site
-  #--------------------
-  - type: staticSite # CORRECTED: Use camelCase 'staticSite'
+  - type: staticSite
     name: investor-app-frontend
     rootDir: frontend
     buildCommand: "npm install && npm run build"
@@ -46,3 +32,6 @@ services:
           type: web
           name: investor-app-backend
           property: url
+
+databases:
+  - name: investor-db
