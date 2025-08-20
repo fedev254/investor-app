@@ -1,0 +1,15 @@
+/* in frontend/src/components/Footer.module.css */
+
+.footerContainer {
+  /* You can add any container-specific styles here if needed */
+}
+
+.socialIcon i {
+  font-size: 1.2rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.socialIcon:hover i {
+  transform: scale(1.2);
+  color: #ffc107; /* Or your preferred brand color */
+}
