@@ -10,7 +10,9 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-
+from whitenoise import WhiteNoise
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 application = get_wsgi_application()
+if os.environ.get('RENDER'):
+    application = WhiteNoise(application, root=os.environ.get('MEDIA_ROOT'))
