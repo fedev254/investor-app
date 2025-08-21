@@ -1,6 +1,6 @@
 // in frontend/src/components/Layout.jsx
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react'; // Add useEffect
 import { Outlet, Navigate } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -10,7 +10,16 @@ import styles from './Layout.module.css';
 
 const Layout = () => {
     const { user } = useContext(AuthContext);
-    const [isSidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+    // This effect adds/removes a class to the body to prevent scrolling when menu is open
+    useEffect(() => {
+        if (isSidebarOpen) {
+            document.body.classList.add(styles.bodyNoScroll);
+        } else {
+            document.body.classList.remove(styles.bodyNoScroll);
+        }
+    }, [isSidebarOpen]);
 
     if (!user) {
         return <Navigate to="/login" />;
@@ -22,11 +31,13 @@ const Layout = () => {
 
     return (
         <div className={styles.appContainer}>
-            {/* Pass the toggle function and state to the Header */}
             <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
             
+            {/* The Overlay is only visible when the sidebar is open on mobile */}
+            {isSidebarOpen && <div className={styles.overlay} onClick={toggleSidebar}></div>}
+
             <div className={styles.layoutContainer}>
-                {/* Add a class to the sidebar based on its state */}
+                {/* Apply the 'open' class based on the state */}
                 <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
                     <Sidebar />
                 </div>

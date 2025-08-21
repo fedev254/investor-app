@@ -86,3 +86,10 @@
   margin-bottom: 1.5rem; /* Give error message some space */
   font-weight: 500;
 }
+
+.input {
+  color: #212529;
+}
+.input::placeholder {
+  color: #ced4da; 
+}
