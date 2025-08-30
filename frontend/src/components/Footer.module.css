@@ -1,32 +1,80 @@
-/* in frontend/src/components/Footer.module.css */
+/* Footer.module.css */
 
-/* General text styling for the footer for a consistent, readable look */
-.footerText {
-  font-size: 0.9rem;      /* Slightly smaller than main body text */
-  color: #adb5bd;        /* A softer white/grey for less emphasis */
-  margin-bottom: 0.5rem;  /* Consistent spacing */
+/* General footer container */
+.footer {
+  background: linear-gradient(180deg, #0d47a1, #1976d2); /* Deep → Sky blue */
+  color: #e3f2fd; /* Light text for contrast */
+  padding: 3rem 1rem 2rem 1rem;
 }
 
-/* Styling for clickable links in the "Links" section */
+/* Section headings */
+.footerTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #bbdefb; /* Soft sky-blue */
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Paragraph / description */
+.footerText {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #e3f2fd;
+  margin-bottom: 0.8rem;
+}
+
+/* Footer links */
 .footerLink {
-  transition: color 0.2s ease-in-out;
+  font-size: 0.9rem;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out, padding-left 0.2s ease-in-out;
+  display: inline-block;
 }
 
 .footerLink:hover {
-  color: #ffc107 !important; /* The same warning/gold color as the titles on hover */
-  text-decoration: underline !important;
+  color: #ffeb3b; /* Yellow highlight on hover */
+  padding-left: 4px;
 }
 
-/* Styling for the social media icons */
+/* Social icons */
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin-left: 0.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
 .socialIcon i {
-  font-size: 1.3rem;
-  color: #ffffff; /* Start as white */
-  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.socialIcon:hover {
+  background-color: #ffeb3b;
+  transform: translateY(-3px);
 }
 
 .socialIcon:hover i {
-  transform: scale(1.2);    /* Make the icon slightly larger on hover */
-  color: #ffc107;         /* Change color to match the theme's highlight color */
+  color: #0d47a1;
 }
 
-/* No other styles are needed as Bootstrap handles the main layout and responsiveness */
+/* Bottom bar */
+.bottomBar {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: #e0f7fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}

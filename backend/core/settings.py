@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',
+    'whitenoise.runserver_nostatic', # Already correctly included
     'shops',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -33,7 +33,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Already correctly included and positioned
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,7 +48,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True, # This MUST be True for the admin templates to be found
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -72,7 +72,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'investor_db',
             'USER': 'investor_user',
-            'PASSWORD': 'your_local_password', # <-- Your local DB password here
+            'PASSWORD': '6d5JQgt33.',
             'HOST': '127.0.0.1',
             'PORT': '5432',
         }
@@ -88,7 +88,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # --- STATIC FILES (for Django Admin, served by WhiteNoise) ---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # Already correctly included
 
 # --- MEDIA FILES (User uploads, configured for Render Disks) ---
 MEDIA_URL = '/media/'
